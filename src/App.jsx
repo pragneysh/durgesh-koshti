@@ -14,7 +14,7 @@ import Trainers from "./pages/Trainers";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/durgesh-koshti-new">
       <Navbar />
 
       <Routes>
