@@ -4,13 +4,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  build: {
-    outDir: "dist",
-  },
-  resolve: {
-    alias: {
-      "@": "/src",
-    },
-  },
-  base: "/durgesh-koshti/",
+  base: "/durgesh-koshti-new/"
+
 });
