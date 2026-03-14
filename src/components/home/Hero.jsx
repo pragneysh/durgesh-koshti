@@ -10,12 +10,11 @@ export default function Hero() {
 
   useEffect(() => {
     fetch(
-      "https://opensheet.elk.sh/13xpPxWFAVd-jSLFwj0tkVi3IJKMGTtHyOqd5Q2XjDBA/Sheet1",
+      "https://opensheet.elk.sh/1G52Euo-LvS0bJgx7JsdXSR4RTmLsmnhbX0JE2FsEO0A/Hero",
     )
       .then((res) => res.json())
       .then((data) => setSlides(data));
   }, []);
-  console.log(slides);
 
   return (
     <section className="w-full h-[60vh] sm:h-[70vh] md:h-[85vh] relative">

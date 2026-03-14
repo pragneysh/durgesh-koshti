@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   FaChalkboardTeacher,
   FaUserGraduate,
@@ -8,38 +9,34 @@ import {
 import { MdSelfImprovement } from "react-icons/md";
 
 export default function MotivationGuide() {
-  const items = [
-    {
-      icon:  <MdSelfImprovement   size={35} />,
-      title: "Yoga Training",
-      text: "Whether you're a seasoned practitioner or just starting out, there is room for growth. Join Grand Master Kris for yoga training, workshops, and retreats designed to improve flexibility, strength, and inner peace.",
-    },
-    {
-      icon: <FaChalkboardTeacher size={30} />,
-      title: "Motivational Sessions",
-      text: "Inspiring talks for students and professionals to build confidence, develop positive habits, and stay focused on their personal and professional goals.",
-    },
-    {
-      icon: <FaUserGraduate size={30} />,
-      title: "Student Mentorship",
-      text: "Personal guidance for students to improve concentration, develop effective study techniques, and make the right decisions for their academic and career journey.",
-    },
-    {
-      icon: <FaBrain size={30} />,
-      title: "Mind & Discipline",
-      text: "Combining yoga with mental training to strengthen discipline, focus, emotional stability, and overall mental wellness.",
-    },
-    {
-      icon: <FaHeartbeat size={30} />,
-      title: "Health & Wellness Programs",
-      text: "Special programs focused on improving physical health, breathing techniques, stress relief, and maintaining a balanced lifestyle through yoga practices.",
-    },
-    {
-      icon: <FaSpa size={30} />,
-      title: "Meditation & Mindfulness",
-      text: "Guided meditation sessions that help calm the mind, reduce anxiety, improve self-awareness, and promote deep inner peace.",
-    },
-  ];
+
+  const [items, setItems] = useState([]);
+
+  const iconMap = {
+    MdSelfImprovement: <MdSelfImprovement size={35} />,
+    FaChalkboardTeacher: <FaChalkboardTeacher size={30} />,
+    FaUserGraduate: <FaUserGraduate size={30} />,
+    FaBrain: <FaBrain size={30} />,
+    FaHeartbeat: <FaHeartbeat size={30} />,
+    FaSpa: <FaSpa size={30} />,
+  };
+
+  useEffect(() => {
+    fetch(
+      "https://opensheet.elk.sh/1G52Euo-LvS0bJgx7JsdXSR4RTmLsmnhbX0JE2FsEO0A/Motivation-&-Student-Guidance"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+
+        const rows = data.map((row) => ({
+          icon: iconMap[row.Icon],
+          title: row.Title,
+          text: row.Description,
+        }));
+
+        setItems(rows);
+      });
+  }, []);
 
   return (
     <section className="py-20 bg-white">

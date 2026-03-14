@@ -1,38 +1,25 @@
+import { useEffect, useState } from "react";
 import SectionTitle from "../common/SectionTitle";
 
 export default function YogaClasses() {
-  const classes = [
-    {
-      img: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b",
-      title: "Morning Yoga",
-      desc: "Start your day with calm energy and flexibility.",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1518611012118-696072aa579a",
-      title: "Meditation Session",
-      desc: "Improve mental clarity and inner peace.",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1506126613408-eca07ce68773",
-      title: "Power Yoga",
-      desc: "Strengthen your body and build stamina.",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0",
-      title: "Group Yoga",
-      desc: "Practice yoga together and stay motivated.",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1552196563-55cd4e45efb3",
-      title: "Relaxation Yoga",
-      desc: "Release stress and improve breathing.",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1593811167562-9cef47bfc4d7",
-      title: "Advanced Yoga",
-      desc: "Challenge yourself with advanced poses.",
-    },
-  ];
+
+  const [classes, setClasses] = useState([]);
+
+  useEffect(() => {
+    fetch(
+      "https://opensheet.elk.sh/1NC7bxiALAsHAq5PnpxOVYkSh3bKNDZlEB5GzMTHzISA/YogaClasses"
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        const rows = data.map((row) => ({
+          img: row.Img,
+          title: row.Title,
+          desc: row.Desc,
+        }));
+
+        setClasses(rows);
+      });
+  }, []);
 
   return (
     <section className="max-w-7xl mx-auto px-6 py-16">
@@ -47,14 +34,12 @@ export default function YogaClasses() {
             key={index}
             className="relative group overflow-hidden rounded-xl shadow-sm hover:shadow-lg transition"
           >
-            {/* Image */}
             <img
               src={item.img}
               alt={item.title}
               className="w-full h-60 object-cover group-hover:scale-110 transition duration-500"
             />
 
-            {/* Hover Overlay */}
             <div
               className="
               absolute inset-0 m-5 rounded-xl
@@ -66,7 +51,9 @@ export default function YogaClasses() {
               transition-all duration-500
               "
             >
-              <h4 className="font-semibold text-lg mb-2">{item.title}</h4>
+              <h4 className="font-semibold text-lg mb-2">
+                {item.title}
+              </h4>
 
               <p className="text-sm opacity-90 mb-4">
                 {item.desc}
