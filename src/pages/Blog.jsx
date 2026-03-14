@@ -3,7 +3,7 @@ import BlogGrid from "../components/blog/BlogGrid";
 
 export default function Blog() {
 
-  const baseURL =
+  const baseURL = 
     "https://opensheet.elk.sh/1vFFW7_BhZiTTk4WyuoWYPam5hefrgz1UU78PTvio75s";
 
   return (
