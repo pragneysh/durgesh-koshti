@@ -1,4 +1,4 @@
-import logo from "/assets/logo.png"; // ✅ FIXED (Vite public folder)
+import logo from "/assets/Yoga_Logo.svg"; // ✅ FIXED (Vite public folder)
 
 export default function Footer() {
   const portfolio = [

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../../public/assets/logo.png";
+import logo from "../../../public/assets/Yoga_Logo.svg";
 import { Link } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 
