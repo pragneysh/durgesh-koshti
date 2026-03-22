@@ -1,4 +1,15 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Gallery from "./pages/Gallery";
+import Contact from "./pages/Contact";
+import Class from "./pages/Class";
+import Blog from "./pages/Blog";
+import Seminar from "./pages/Seminar";
+import Trainers from "./pages/Trainers";
 
 export default function App() {
   return (
