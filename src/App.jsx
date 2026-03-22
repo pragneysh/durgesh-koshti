@@ -1,20 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./components/common/Navbar";
-import Footer from "./components/common/Footer";
-
-import Home from "./pages/Home";
-import About from "./pages/About";
-import Services from "./pages/Services";
-import Gallery from "./pages/Gallery";
-import Contact from "./pages/Contact";
-import Class from "./pages/Class";
-import Blog from "./pages/Blog";
-import Seminar from "./pages/Seminar";
-import Trainers from "./pages/Trainers";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 export default function App() {
   return (
-    <BrowserRouter basename="/durgesh-koshti-new">
+    <HashRouter>
       <Navbar />
 
       <Routes>
@@ -30,6 +18,6 @@ export default function App() {
       </Routes>
 
       <Footer />
-    </BrowserRouter>  
+    </HashRouter>
   );
 }
