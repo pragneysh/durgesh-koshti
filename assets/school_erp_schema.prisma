@@ -1,0 +1,418 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+enum FeeStatus {
+  PAID
+  PENDING
+  OVERDUE
+}
+
+enum ExamType {
+  MIDTERM
+  FINAL
+  QUIZ
+  UNIT_TEST
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  UPI
+  BANK_TRANSFER
+}
+
+enum PaymentStatus {
+  SUCCESS
+  FAILED
+  PENDING
+}
+
+enum AnnouncementTarget {
+  ALL
+  STUDENTS
+  TEACHERS
+}
+
+model School {
+  id      Int     @id @default(autoincrement())
+  name    String
+  address String?
+  phone   String?
+  email   String?
+
+  users    User[]
+  classes  Class[]
+  subjects Subject[]
+  rooms    Room[]
+
+  createdAt     DateTime       @default(now())
+  announcements Announcement[]
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  schoolId Int
+  name     String
+  email    String @unique
+  password String
+  mobileNo String
+  role     Role
+
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  lastLogin     DateTime?
+
+  school School @relation(fields: [schoolId], references: [id])
+
+  teacher Teacher?
+  student Student?
+  admin   Admin?
+
+  sessions Session[]
+  files    File[]
+  logs     AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  announcements Announcement[]
+  notifications Notification[]
+
+  @@index([schoolId])
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  token     String
+  expiresAt DateTime
+  ipAddress String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Admin {
+  id      Int    @id @default(autoincrement())
+  userId  Int    @unique
+  adminId String @unique
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Teacher {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique
+  teacherId String @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  subjects   TeacherSubject[]
+  attendance TeacherAttendance[]
+  timetables Timetable[]
+  classes    Class[]
+}
+
+model Student {
+  id      Int    @id @default(autoincrement())
+  userId  Int    @unique
+  rollNo  String
+  gender  Gender
+  classId Int
+
+  user  User  @relation(fields: [userId], references: [id])
+  class Class @relation(fields: [classId], references: [id])
+
+  attendance StudentAttendance[]
+  fees       Fee[]
+  results    ExamResult[]
+
+  history StudentClassHistory[]
+}
+
+model StudentClassHistory {
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  classId   Int
+  startDate DateTime
+  endDate   DateTime?
+
+  student Student @relation(fields: [studentId], references: [id])
+  class   Class   @relation(fields: [classId], references: [id])
+}
+
+model Class {
+  id           Int    @id @default(autoincrement())
+  schoolId     Int
+  name         String
+  section      String
+  academicYear String
+  teacherId    Int?
+
+  school  School   @relation(fields: [schoolId], references: [id])
+  teacher Teacher? @relation(fields: [teacherId], references: [id])
+
+  students              Student[]
+  subjects              ClassSubject[]
+  timetable             Timetable[]
+  exams                 Exam[]
+  studentClassHistories StudentClassHistory[]
+
+  @@unique([schoolId, name, section, academicYear])
+}
+
+model Subject {
+  id       Int    @id @default(autoincrement())
+  schoolId Int
+  name     String
+
+  school School @relation(fields: [schoolId], references: [id])
+
+  teachers   TeacherSubject[]
+  classes    ClassSubject[]
+  exams      Exam[]
+  timetables Timetable[]
+}
+
+model Room {
+  id       Int    @id @default(autoincrement())
+  schoolId Int
+  name     String
+
+  school     School      @relation(fields: [schoolId], references: [id])
+  timetables Timetable[]
+}
+
+model TeacherSubject {
+  id        Int @id @default(autoincrement())
+  teacherId Int
+  subjectId Int
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@unique([teacherId, subjectId])
+}
+
+model ClassSubject {
+  id        Int @id @default(autoincrement())
+  classId   Int
+  subjectId Int
+
+  class   Class   @relation(fields: [classId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  @@unique([classId, subjectId])
+}
+
+model StudentAttendance {
+  id        Int              @id @default(autoincrement())
+  studentId Int
+  date      DateTime
+  status    AttendanceStatus
+
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@unique([studentId, date])
+}
+
+model TeacherAttendance {
+  id        Int              @id @default(autoincrement())
+  teacherId Int
+  date      DateTime
+  status    AttendanceStatus
+
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+
+  @@unique([teacherId, date])
+}
+
+model FeeType {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  fees Fee[]
+}
+
+model Fee {
+  id        Int       @id @default(autoincrement())
+  studentId Int
+  feeTypeId Int
+  amount    Float
+  dueDate   DateTime
+  status    FeeStatus
+
+  student Student @relation(fields: [studentId], references: [id])
+  feeType FeeType @relation(fields: [feeTypeId], references: [id])
+
+  installments FeeInstallment[]
+}
+
+model FeeInstallment {
+  id      Int       @id @default(autoincrement())
+  feeId   Int
+  amount  Float
+  dueDate DateTime
+  status  FeeStatus
+
+  fee Fee @relation(fields: [feeId], references: [id])
+
+  payments Payment[]
+}
+
+model Payment {
+  id            Int           @id @default(autoincrement())
+  installmentId Int
+  amount        Float
+  method        PaymentMethod
+  status        PaymentStatus
+  transactionId String?
+
+  installment FeeInstallment @relation(fields: [installmentId], references: [id])
+
+  paidAt DateTime @default(now())
+}
+
+model Exam {
+  id        Int      @id @default(autoincrement())
+  name      String
+  type      ExamType
+  classId   Int
+  subjectId Int
+  examDate  DateTime
+
+  class   Class   @relation(fields: [classId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+
+  results ExamResult[]
+}
+
+model ExamResult {
+  id        Int     @id @default(autoincrement())
+  examId    Int
+  studentId Int
+  marks     Float
+  grade     String?
+
+  exam    Exam    @relation(fields: [examId], references: [id])
+  student Student @relation(fields: [studentId], references: [id])
+
+  @@unique([examId, studentId])
+}
+
+model Timetable {
+  id        Int  @id @default(autoincrement())
+  classId   Int
+  subjectId Int
+  teacherId Int
+  roomId    Int?
+
+  day       String
+  period    Int
+  startTime DateTime
+  endTime   DateTime
+
+  class   Class   @relation(fields: [classId], references: [id])
+  subject Subject @relation(fields: [subjectId], references: [id])
+  teacher Teacher @relation(fields: [teacherId], references: [id])
+  room    Room?   @relation(fields: [roomId], references: [id])
+}
+
+model Announcement {
+  id        Int                @id @default(autoincrement())
+  schoolId  Int
+  title     String
+  content   String
+  target    AnnouncementTarget
+  createdBy Int
+
+  school School @relation(fields: [schoolId], references: [id])
+  user   User   @relation(fields: [createdBy], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id      Int     @id @default(autoincrement())
+  userId  Int
+  title   String
+  message String
+  isRead  Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id         Int    @id @default(autoincrement())
+  url        String
+  fileType   String
+  uploadedBy Int
+
+  user User @relation(fields: [uploadedBy], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  action    String
+  tableName String
+  recordId  Int
+  oldData   Json?
+  newData   Json?
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Permission {
+  id   Int    @id @default(autoincrement())
+  code String @unique
+
+  roles RolePermission[]
+}
+
+model RolePermission {
+  id           Int  @id @default(autoincrement())
+  role         Role
+  permissionId Int
+
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@unique([role, permissionId])
+}
