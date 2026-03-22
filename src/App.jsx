@@ -25,11 +25,11 @@ export default function App() {
         <Route path="/services" element={<Services />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/Seminar" element={<Seminar />} />
-        <Route path="/Trainers" element={<Trainers />} />
+        <Route path="/seminar" element={<Seminar />} />
+        <Route path="/trainers" element={<Trainers />} />
       </Routes>
 
       <Footer />
-    </BrowserRouter>
+    </BrowserRouter>  
   );
 }
