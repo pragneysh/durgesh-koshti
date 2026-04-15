@@ -5,5 +5,5 @@ import viteCompression from "vite-plugin-compression";
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteCompression()],
-  base: "/durgesh-koshti-new/",
+  base: "/durgesh-koshti/",
 });
