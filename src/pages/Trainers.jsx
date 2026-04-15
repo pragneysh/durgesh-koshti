@@ -63,7 +63,7 @@ export default function Trainers() {
               <p className="text-gray-600 text-sm mt-3">
                 {trainer.bio}
               </p>
-
+{/* 
               <div className="flex justify-center gap-8 mt-6 text-sm text-gray-600">
                 <div>
                   <p className="font-semibold">{trainer.students}</p>
@@ -78,7 +78,7 @@ export default function Trainers() {
 
               <button className="mt-6 px-6 py-2 bg-gray-100 rounded-full hover:bg-[#5BA69A] hover:text-white transition">
                 Follow +
-              </button>
+              </button> */}
 
             </div>
           ))}

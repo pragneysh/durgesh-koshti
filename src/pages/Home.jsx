@@ -6,8 +6,12 @@ import MotivationGuide from "../components/motivation/MotivationGuide";
 import Programs from "../components/motivation/Programs";
 import Testimonials from "../components/motivation/Testimonials";
 import CTA from "../components/motivation/CTA";
+// import JoinYogaClassesForm from "../components/common/JoinYogaClassesForm";
 
 export default function Home() {
+
+  
+
   return (
     <>
       <Hero />
@@ -18,6 +22,7 @@ export default function Home() {
       <Testimonials />
       {/* <YogaClasses /> */}
       <CTA />
+      {/* <JoinYogaClassesForm /> */}
     </>
   );
 }
